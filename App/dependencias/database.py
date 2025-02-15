@@ -3,7 +3,6 @@ from psycopg2 import DatabaseError
 import os
 from dotenv import load_dotenv
 
-# Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
 
 class ConexaoPostgres:
@@ -44,21 +43,12 @@ class ConexaoPostgres:
     return self.executar_query(query, params)
 
   def teste(self) -> str:
-    r = self.select("SELECT 1;")  # Executar uma query de teste
-
-    # Imprimir o retorno completo para ver a estrutura
-    print(f"Resultado da consulta: {r}")
-    
+    r = self.select("SELECT 1;") # Executa uma query de teste   
     resultado = r[0]['?column?']
 
-    if resultado == 1:
-      return {
-        "status": "success",
-        "resultado": "Conexão bem sucedida",
-      }
-    else:
-      return {
-        "status": "error",
-        "resultado": "Falha na conexão",
-      }
+    return {
+      "status": "success" if resultado == 1 else "error",
+      "resultado": "Conexão bem sucedida" if resultado == 1 else "Falha na conexão"
+    }
+
     

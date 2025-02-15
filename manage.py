@@ -15,10 +15,7 @@ async def apiname() -> str:
 
 @app.get("/healthz", include_in_schema=False, response_class=JSONResponse)
 async def test_conexao():
-  resultado = ConexaoPostgres().teste()
-
-  print(f"Resultado da consulta: {resultado}")
-  
+  resultado = ConexaoPostgres().teste() 
   return JSONResponse(content={"status": resultado['status'], "result": resultado['resultado']})
 
 
