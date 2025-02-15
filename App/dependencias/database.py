@@ -1,5 +1,5 @@
 import psycopg2
-from psycopg2 import sql, DatabaseError
+from psycopg2 import DatabaseError
 import os
 from dotenv import load_dotenv
 
@@ -26,7 +26,39 @@ class ConexaoPostgres:
           if commit:
             conn.commit()
             return {"success": True, "rows_affected": cursor.rowcount}
-          return cursor.fetchall()
+          # Recupera os resultados da consulta como lista de dicionários
+          return self.dictfetchall(cursor)  # Passando o cursor para o dictfetchall
     except DatabaseError as e:
       print(f"Erro ao executar query: {e}")
       return {"success": False, "error": str(e)}
+
+  def dictfetchall(self, cursor):
+    """Recupera os dados da consulta como uma lista de dicionários"""
+    columns = [col[0] for col in cursor.description]  # Usando cursor recebido como argumento
+    rows = cursor.fetchall()
+    # Transforma cada linha em um dicionário
+    return [dict(zip(columns, row)) for row in rows]
+
+  def select(self, query, params=None):
+    """Executa uma query de seleção no banco de dados"""
+    return self.executar_query(query, params)
+
+  def teste(self) -> str:
+    r = self.select("SELECT 1;")  # Executar uma query de teste
+
+    # Imprimir o retorno completo para ver a estrutura
+    print(f"Resultado da consulta: {r}")
+    
+    resultado = r[0]['?column?']
+
+    if resultado == 1:
+      return {
+        "status": "success",
+        "resultado": "Conexão bem sucedida",
+      }
+    else:
+      return {
+        "status": "error",
+        "resultado": "Falha na conexão",
+      }
+    
