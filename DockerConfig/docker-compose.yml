@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  postgresql:
+    image: bitnami/postgresql:latest
+    container_name: postgresql
+    restart: always
+    networks:
+      - app_network
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=docker # Usuário do banco de dados
+      - POSTGRES_PASSWORD=docker # Senha do banco de dados
+      - POSTGRES_DB=mydatabase # Nome do banco de dados
+    volumes:
+      - "postgresql_data:/bitnami/postgresql" # Acesso ao Docker
+
+volumes:
+  postgresql_data:
+
+networks:
+  app_network:
